@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ShopWise</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;0,900;1,600&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#F7F3EC;--card:#FFFFFF;--green:#1B3A2D;--green-mid:#2A5C42;
+  --green-light:#4A9B6F;--cream:#F7F3EC;--orange:#E8723A;--yellow:#F5C842;
+  --red:#C94040;--blue:#2A5580;--text:#1A1A14;--muted:#7A7A6A;
+  --border:#E8E2D8;--publix:#2E7D32;--aldi:#C62828;--foodcity:#1565C0;
+  --kroger:#005DAA;--shadow:0 2px 16px rgba(0,0,0,0.07);
+}
+body{font-family:'DM Sans',sans-serif;background:#D8D2C8;display:flex;justify-content:center;align-items:flex-start;min-height:100vh;padding:30px 16px 60px;}
+.phone-wrap{display:flex;flex-direction:column;align-items:center;gap:16px;}
+.phone-label{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:700;color:#999;letter-spacing:2px;text-transform:uppercase;}
+.phone{width:393px;height:852px;background:var(--green);border-radius:55px;padding:14px;box-shadow:0 0 0 2px #222, 0 40px 100px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(255,255,255,0.06);position:relative;}
+.notch{position:absolute;top:14px;left:50%;transform:translateX(-50%);width:126px;height:37px;background:var(--green);border-radius:0 0 24px 24px;z-index:100;display:flex;align-items:center;justify-content:center;}
+.notch::after{content:'';width:12px;height:12px;border-radius:50%;background:#111;border:2px solid #2a2a2a;}
+.screen-wrap{width:100%;height:100%;border-radius:42px;overflow:hidden;background:var(--bg);position:relative;display:flex;flex-direction:column;}
+.screen{position:absolute;top:0;left:0;right:0;bottom:0;display:none;flex-direction:column;}
+.screen.active{display:flex;}
+.scrollable{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+.scrollable::-webkit-scrollbar{display:none;}
+.status{background:var(--green);padding:52px 22px 0;display:flex;justify-content:space-between;font-size:12px;font-weight:700;color:rgba(255,255,255,0.8);letter-spacing:0.3px;}
+.nav{background:#fff;border-top:1px solid #EEE;display:flex;padding:10px 0 26px;position:relative;z-index:50;flex-shrink:0;}
+.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;border:none;background:none;cursor:pointer;padding:0;}
+.nav-icon{font-size:21px;line-height:1;}
+.nav-txt{font-family:'DM Sans',sans-serif;font-size:9px;font-weight:700;letter-spacing:0.5px;color:#CCC;text-transform:uppercase;}
+.nav-btn.on .nav-txt{color:var(--green-light);}
+.home-hero{background:var(--green);padding:14px 22px 26px;position:relative;overflow:hidden;}
+.home-hero::before{content:'';position:absolute;top:-60px;right:-60px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(74,155,111,0.18) 0%,transparent 70%);}
+.home-hero::after{content:'';position:absolute;bottom:-40px;left:20px;width:140px;height:140px;border-radius:50%;background:rgba(255,255,255,0.03);}
+.week-pill{display:inline-flex;align-items:center;gap:5px;background:rgba(74,155,111,0.18);border:1px solid rgba(74,155,111,0.35);color:#90CFA8;font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;padding:5px 12px;border-radius:20px;margin-bottom:12px;}
+.week-dot{width:6px;height:6px;border-radius:50%;background:#4A9B6F;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
+.hero-title{font-family:'Fraunces',serif;font-size:30px;font-weight:900;color:#F0EBE0;line-height:1.1;margin-bottom:6px;}
+.hero-title em{color:#90CFA8;font-style:italic;}
+.hero-sub{font-size:12px;color:rgba(255,255,255,0.42);font-weight:400;}
+.verdict-banner{margin:16px 14px 0;background:var(--green);border-radius:16px;padding:16px 18px;position:relative;overflow:hidden;}
+.verdict-banner::before{content:'💬';position:absolute;right:14px;top:10px;font-size:36px;opacity:0.1;}
+.vb-label{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#90CFA8;margin-bottom:7px;}
+.vb-text{font-family:'Fraunces',serif;font-size:13px;font-style:italic;line-height:1.6;color:rgba(255,255,255,0.85);}
+.sec-head{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);padding:18px 16px 10px;}
+.cat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 14px;}
+.cat-tile{background:#fff;border-radius:16px;padding:15px 14px;box-shadow:var(--shadow);cursor:pointer;border:1px solid rgba(0,0,0,0.04);transition:transform 0.18s,box-shadow 0.18s;}
+.cat-tile:active{transform:scale(0.96);}
+.ct-emoji{font-size:26px;margin-bottom:8px;display:block;}
+.ct-cat{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:3px;}
+.ct-store{font-family:'Fraunces',serif;font-size:15px;font-weight:700;color:var(--text);margin-bottom:3px;}
+.ct-detail{font-size:11px;color:var(--muted);line-height:1.4;}
+.store-dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:5px;vertical-align:middle;position:relative;top:-1px;}
+.spot-row{display:flex;gap:11px;padding:2px 14px 16px;overflow-x:auto;scrollbar-width:none;}
+.spot-row::-webkit-scrollbar{display:none;}
+.spot-card{min-width:148px;flex-shrink:0;border-radius:16px;padding:16px 14px;cursor:pointer;position:relative;overflow:hidden;transition:transform 0.18s;}
+.spot-card:active{transform:scale(0.95);}
+.spot-card::after{content:'';position:absolute;bottom:-25px;right:-25px;width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,0.06);}
+.sc-store{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;}
+.sc-name{font-family:'Fraunces',serif;font-size:14px;font-weight:700;line-height:1.2;margin-bottom:10px;color:#F0EBE0;}
+.sc-price{font-size:22px;font-weight:800;color:#90CFA8;margin-bottom:7px;}
+.badge{display:inline-block;font-size:9px;font-weight:800;letter-spacing:0.6px;text-transform:uppercase;padding:3px 9px;border-radius:4px;color:#fff;}
+.b-bogo{background:var(--red);}.b-sale{background:var(--orange);}.b-best{background:var(--green-mid);}.b-low{background:var(--blue);}.b-coupon{background:#7B3FA0;}
+.deals-header{background:var(--green);padding:14px 20px 18px;}
+.deals-title{font-family:'Fraunces',serif;font-size:26px;font-weight:900;color:#F0EBE0;margin-bottom:13px;}
+.search-box{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.14);border-radius:12px;padding:10px 15px;color:#fff;font-family:'DM Sans',sans-serif;font-size:13px;width:100%;outline:none;}
+.search-box::placeholder{color:rgba(255,255,255,0.35);}
+.filter-row{display:flex;gap:7px;padding:12px 14px 2px;overflow-x:auto;background:var(--bg);scrollbar-width:none;flex-shrink:0;}
+.filter-row::-webkit-scrollbar{display:none;}
+.fpill{flex-shrink:0;padding:6px 13px;border-radius:20px;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:700;cursor:pointer;border:1.5px solid transparent;white-space:nowrap;transition:all 0.15s;}
+.fpill.on{background:var(--green);color:#90CFA8;border-color:var(--green);}
+.fpill:not(.on){background:transparent;color:var(--muted);border-color:#D8D2C8;}
+.deals-list{padding:10px 14px 16px;display:flex;flex-direction:column;gap:9px;}
+.deal-row{background:#fff;border-radius:14px;padding:13px 15px;display:flex;align-items:center;gap:12px;box-shadow:0 2px 10px rgba(0,0,0,0.05);cursor:pointer;border-left:4px solid #DDD;transition:transform 0.15s;}
+.deal-row:active{transform:scale(0.98);}
+.dr-publix{border-color:var(--publix);}.dr-aldi{border-color:var(--aldi);}.dr-foodcity{border-color:var(--foodcity);}.dr-kroger{border-color:var(--kroger);}
+.dr-icon{width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0;}
+.dr-info{flex:1;min-width:0;}
+.dr-name{font-family:'Fraunces',serif;font-size:14px;font-weight:700;color:var(--text);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.dr-meta{font-size:10px;font-weight:600;}
+.dr-right{display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex-shrink:0;}
+.dr-price{font-size:16px;font-weight:800;color:var(--text);}
+.cat-group-head{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);padding:14px 0 6px;border-bottom:1px solid var(--border);margin-bottom:6px;}
+.top3-strip{display:flex;gap:9px;padding:4px 14px 12px;overflow-x:auto;scrollbar-width:none;}
+.top3-strip::-webkit-scrollbar{display:none;}
+.t3card{min-width:130px;flex-shrink:0;background:var(--green);border-radius:14px;padding:14px 12px;cursor:pointer;position:relative;overflow:hidden;transition:transform 0.18s;}
+.t3card:active{transform:scale(0.95);}
+.t3card::after{content:'';position:absolute;bottom:-20px;right:-20px;width:60px;height:60px;border-radius:50%;background:rgba(255,255,255,0.05);}
+.t3-store{font-size:8px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:5px;}
+.t3-name{font-family:'Fraunces',serif;font-size:13px;font-weight:700;line-height:1.2;color:#F0EBE0;margin-bottom:8px;}
+.t3-price{font-size:18px;font-weight:800;color:#90CFA8;}
+.detail-hero{background:var(--green);padding:18px 22px 30px;position:relative;overflow:hidden;}
+.detail-hero::before{content:'';position:absolute;top:-50px;right:-40px;width:180px;height:180px;border-radius:50%;background:rgba(74,155,111,0.1);}
+.back-btn{display:flex;align-items:center;gap:5px;color:rgba(255,255,255,0.55);font-size:13px;font-weight:600;cursor:pointer;border:none;background:none;padding:0;margin-bottom:18px;transition:color 0.15s;}
+.back-btn:hover{color:#fff;}
+.dh-cat{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#90CFA8;margin-bottom:7px;}
+.dh-name{font-family:'Fraunces',serif;font-size:32px;font-weight:900;color:#F0EBE0;line-height:1.1;margin-bottom:10px;}
+.dh-store-row{display:flex;align-items:center;gap:8px;margin-bottom:18px;}
+.dh-store-tag{font-size:11px;font-weight:700;padding:4px 12px;border-radius:20px;letter-spacing:0.4px;}
+.dh-price{font-size:46px;font-weight:800;color:#90CFA8;line-height:1;margin-bottom:3px;}
+.dh-price-note{font-size:11px;color:rgba(255,255,255,0.38);}
+.detail-body{padding:18px 16px 100px;display:flex;flex-direction:column;gap:12px;}
+.d-card{background:#fff;border-radius:16px;padding:17px;box-shadow:var(--shadow);}
+.d-card-label{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+.verdict-row{display:flex;align-items:center;gap:13px;}
+.v-emoji{font-size:38px;}.v-action{font-family:'Fraunces',serif;font-size:24px;font-weight:700;color:var(--green);}
+.v-why{font-size:11px;color:var(--muted);margin-top:2px;}
+.d-card-text{font-size:13px;line-height:1.65;color:var(--text);}
+.comp-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #F2EDE6;}
+.comp-row:last-child{border-bottom:none;}
+.comp-store{font-size:13px;font-weight:600;color:var(--text);}
+.comp-price-best{font-size:14px;font-weight:800;color:var(--green-light);}
+.comp-price-other{font-size:13px;font-weight:500;color:#BBB;text-decoration:line-through;}
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 30px;gap:14px;text-align:center;flex:1;}
+.es-emoji{font-size:52px;}.es-title{font-family:'Fraunces',serif;font-size:22px;font-weight:700;color:var(--green);}
+.es-sub{font-size:13px;color:var(--muted);line-height:1.6;}
+.profile-body{padding:18px 14px;display:flex;flex-direction:column;gap:11px;}
+.p-card{background:#fff;border-radius:16px;padding:17px;box-shadow:var(--shadow);}
+.p-user-row{display:flex;align-items:center;gap:13px;}
+.p-avatar{width:50px;height:50px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.p-name{font-family:'Fraunces',serif;font-size:18px;font-weight:700;}
+.p-sub{font-size:11px;color:var(--muted);margin-top:2px;}
+.signup-card{background:var(--green);border-radius:16px;padding:20px;text-align:center;}
+.sc-title{font-family:'Fraunces',serif;font-size:20px;font-weight:700;color:#F0EBE0;margin-bottom:6px;}
+.sc-sub{font-size:12px;color:rgba(255,255,255,0.5);margin-bottom:16px;line-height:1.5;}
+.sc-btn{background:var(--green-light);color:#fff;padding:12px;border-radius:10px;font-weight:700;font-size:14px;cursor:pointer;border:none;width:100%;font-family:'DM Sans',sans-serif;}
+.store-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid #F2EDE6;}
+.store-row:last-child{border-bottom:none;}
+.sr-left{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:600;}
+.sr-check{width:20px;height:20px;border-radius:50%;background:var(--green-light);display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;}
+.p-label{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:11px;}
+.p-version{font-size:12px;color:var(--muted);}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+.screen.active .home-hero,.screen.active .verdict-banner,.screen.active .cat-grid,.screen.active .spot-row{animation:fadeUp 0.35s ease forwards;}
+.desktop-hint{font-family:'DM Sans',sans-serif;font-size:11px;color:#AAA;text-align:center;max-width:393px;line-height:1.6;}
+</style>
+</head>
+<body>
+<div class="phone-wrap">
+  <div class="phone-label">ShopWise · Apr 22–28 · Real Data</div>
+  <div class="phone">
+    <div class="notch"></div>
+    <div class="screen-wrap">
+      <div class="screen active" id="s-home">
+        <div class="scrollable">
+          <div class="status"><span>9:41</span><span>●●● 100%</span></div>
+          <div class="home-hero">
+            <div class="week-pill"><span class="week-dot"></span>Apr 22 – 28</div>
+            <div class="hero-title">Shop <em>smarter</em><br>this week.</div>
+            <div class="hero-sub">Your weekly grocery cheat sheet · 4 stores</div>
+          </div>
+          <div class="verdict-banner">
+            <div class="vb-label">🗓 This Week's Take</div>
+            <div class="vb-text">"Head to Food City first — pork chops at $1.49/lb is the best meat deal across all stores. Aldi wins on produce and dairy. Kroger's Perdue chicken Buy 1 Get 2 Free is a stock-up moment. Publix BOGOs are solid for pantry and snacks."</div>
+          </div>
+          <div class="sec-head">Best Store by Category</div>
+          <div class="cat-grid">
+            <div class="cat-tile" onclick="goDeals('Proteins')"><span class="ct-emoji">🥩</span><div class="ct-cat">Proteins</div><div class="ct-store"><span class="store-dot" style="background:#1565C0"></span>Food City</div><div class="ct-detail">Pork chops $1.49/lb · cheapest this week</div></div>
+            <div class="cat-tile" onclick="goDeals('Produce')"><span class="ct-emoji">🥦</span><div class="ct-cat">Produce</div><div class="ct-store"><span class="store-dot" style="background:#C62828"></span>Aldi</div><div class="ct-detail">Avocados $0.59 · strawberries $1.79</div></div>
+            <div class="cat-tile" onclick="goDeals('Pantry')"><span class="ct-emoji">🍝</span><div class="ct-cat">Pantry</div><div class="ct-store"><span class="store-dot" style="background:#1565C0"></span>Food City</div><div class="ct-detail">Ramen $0.45 · tomatoes 4/$5</div></div>
+            <div class="cat-tile" onclick="goDeals('Dairy')"><span class="ct-emoji">🥛</span><div class="ct-cat">Dairy</div><div class="ct-store"><span class="store-dot" style="background:#C62828"></span>Aldi</div><div class="ct-detail">Milk $2.54 · cheese $1.49</div></div>
+            <div class="cat-tile" onclick="goDeals('Snacks')"><span class="ct-emoji">🥜</span><div class="ct-cat">Snacks</div><div class="ct-store"><span class="store-dot" style="background:#2E7D32"></span>Publix</div><div class="ct-detail">Granola BOGO · Nature Valley BOGO</div></div>
+            <div class="cat-tile" onclick="goDeals('Drinks')"><span class="ct-emoji">🧃</span><div class="ct-cat">Drinks</div><div class="ct-store"><span class="store-dot" style="background:#1565C0"></span>Food City</div><div class="ct-detail">BodyArmor 10/$10 · Lipton BOGO</div></div>
+          </div>
+          <div class="sec-head">🔥 Spotlight Deals</div>
+          <div class="spot-row">
+            <div class="spot-card" style="background:#1B3A2D;" onclick="goDetail(6)"><div class="sc-store" style="color:#90CFA8;">Food City</div><div class="sc-name">Mixed Pork Chops</div><div class="sc-price">$1.49<span style="font-size:13px;color:rgba(255,255,255,0.4)">/lb</span></div><span class="badge b-best">★ Best Price</span></div>
+            <div class="spot-card" style="background:#3A1B1B;" onclick="goDetail(22)"><div class="sc-store" style="color:#F4A0A0;">Kroger</div><div class="sc-name">Perdue Chicken B1G2</div><div class="sc-price">B1G2</div><span class="badge b-bogo">Stock Up</span></div>
+            <div class="spot-card" style="background:#1B2A3A;" onclick="goDetail(32)"><div class="sc-store" style="color:#A0C4F4;">Aldi</div><div class="sc-name">Large Avocado</div><div class="sc-price">$0.59</div><span class="badge b-best">★ Best Price</span></div>
+            <div class="spot-card" style="background:#2E7D32cc;" onclick="goDetail(0)"><div class="sc-store" style="color:#C8F0C8;">Publix</div><div class="sc-name">Cabot Greek Yogurt</div><div class="sc-price">BOGO</div><span class="badge b-bogo">Stock Up</span></div>
+          </div>
+          <div style="height:16px;"></div>
+        </div>
+        <div class="nav">
+          <button class="nav-btn on" onclick="sw('home')"><span class="nav-icon">🏠</span><span class="nav-txt">Home</span></button>
+          <button class="nav-btn" onclick="sw('deals')"><span class="nav-icon">🏷</span><span class="nav-txt">Deals</span></button>
+          <button class="nav-btn" onclick="sw('saved')"><span class="nav-icon">🔖</span><span class="nav-txt">Saved</span></button>
+          <button class="nav-btn" onclick="sw('profile')"><span class="nav-icon">👤</span><span class="nav-txt">Profile</span></button>
+        </div>
+      </div>
+      <div class="screen" id="s-deals">
+        <div class="deals-header">
+          <div class="status" style="background:transparent;padding:0 0 13px;"><span>9:41</span><span>●●● 100%</span></div>
+          <div class="deals-title">All Deals</div>
+          <input class="search-box" placeholder="🔍  Search any item or store..." oninput="filterDeals(this.value)" id="searchBox">
+        </div>
+        <div class="filter-row" id="filterRow">
+          <div class="fpill on" onclick="setF('All',this)">All</div>
+          <div class="fpill" onclick="setF('Proteins',this)">🥩 Proteins</div>
+          <div class="fpill" onclick="setF('Produce',this)">🥦 Produce</div>
+          <div class="fpill" onclick="setF('Pantry',this)">🍝 Pantry</div>
+          <div class="fpill" onclick="setF('Dairy',this)">🥛 Dairy</div>
+          <div class="fpill" onclick="setF('Snacks',this)">🥜 Snacks</div>
+          <div class="fpill" onclick="setF('Drinks',this)">🧃 Drinks</div>
+        </div>
+        <div class="scrollable"><div id="dealsList"></div></div>
+        <div class="nav">
+          <button class="nav-btn" onclick="sw('home')"><span class="nav-icon">🏠</span><span class="nav-txt">Home</span></button>
+          <button class="nav-btn on" onclick="sw('deals')"><span class="nav-icon">🏷</span><span class="nav-txt">Deals</span></button>
+          <button class="nav-btn" onclick="sw('saved')"><span class="nav-icon">🔖</span><span class="nav-txt">Saved</span></button>
+          <button class="nav-btn" onclick="sw('profile')"><span class="nav-icon">👤</span><span class="nav-txt">Profile</span></button>
+        </div>
+      </div>
+      <div class="screen" id="s-detail">
+        <div class="scrollable">
+          <div class="detail-hero">
+            <div class="status" style="background:transparent;padding:0 0 10px;"><span>9:41</span><span>●●● 100%</span></div>
+            <button class="back-btn" onclick="goBack()">← Back</button>
+            <div class="dh-cat" id="dCat"></div>
+            <div class="dh-name" id="dName"></div>
+            <div class="dh-store-row"><span class="dh-store-tag" id="dStoreTag"></span><span class="badge" id="dBadge"></span></div>
+            <div class="dh-price" id="dPrice"></div>
+            <div class="dh-price-note" id="dNote"></div>
+          </div>
+          <div class="detail-body">
+            <div class="d-card"><div class="d-card-label">Verdict</div><div class="verdict-row"><div class="v-emoji" id="dVEmoji"></div><div><div class="v-action" id="dVerdict"></div><div class="v-why" id="dVWhy"></div></div></div></div>
+            <div class="d-card"><div class="d-card-label">Why It's Worth It</div><div class="d-card-text" id="dWhy"></div></div>
+            <div class="d-card"><div class="d-card-label">Price Comparison</div><div id="dComps"></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="screen" id="s-saved">
+        <div class="deals-header">
+          <div class="status" style="background:transparent;padding:0 0 13px;"><span>9:41</span><span>●●● 100%</span></div>
+          <div class="deals-title">Saved</div>
+        </div>
+        <div class="empty-state"><div class="es-emoji">🔖</div><div class="es-title">Nothing saved yet</div><div class="es-sub">Tap any deal and bookmark it to build your shopping list for the week.</div></div>
+        <div class="nav">
+          <button class="nav-btn" onclick="sw('home')"><span class="nav-icon">🏠</span><span class="nav-txt">Home</span></button>
+          <button class="nav-btn" onclick="sw('deals')"><span class="nav-icon">🏷</span><span class="nav-txt">Deals</span></button>
+          <button class="nav-btn on" onclick="sw('saved')"><span class="nav-icon">🔖</span><span class="nav-txt">Saved</span></button>
+          <button class="nav-btn" onclick="sw('profile')"><span class="nav-icon">👤</span><span class="nav-txt">Profile</span></button>
+        </div>
+      </div>
+      <div class="screen" id="s-profile">
+        <div class="deals-header">
+          <div class="status" style="background:transparent;padding:0 0 13px;"><span>9:41</span><span>●●● 100%</span></div>
+          <div class="deals-title">Profile</div>
+        </div>
+        <div class="scrollable">
+          <div class="profile-body">
+            <div class="p-card"><div class="p-user-row"><div class="p-avatar">👤</div><div><div class="p-name">Guest User</div><div class="p-sub">Sign up to save deals & get alerts</div></div></div></div>
+            <div class="signup-card"><div class="sc-title">Create Free Account</div><div class="sc-sub">Save deals, set store preferences and get Wednesday alerts when new deals drop</div><button class="sc-btn">Sign Up Free — It's Quick</button></div>
+            <div class="p-card">
+              <div class="p-label">My Stores</div>
+              <div class="store-row"><div class="sr-left"><span>🏪</span>Publix</div><div class="sr-check">✓</div></div>
+              <div class="store-row"><div class="sr-left"><span>🏪</span>Aldi</div><div class="sr-check">✓</div></div>
+              <div class="store-row"><div class="sr-left"><span>🏪</span>Food City</div><div class="sr-check">✓</div></div>
+              <div class="store-row"><div class="sr-left"><span>🏪</span>Kroger</div><div class="sr-check">✓</div></div>
+            </div>
+            <div class="p-card"><div class="p-label">App Info</div><div class="p-version">ShopWise v1.0 · Deals updated every Wednesday · Apr 22–28</div></div>
+          </div>
+        </div>
+        <div class="nav">
+          <button class="nav-btn" onclick="sw('home')"><span class="nav-icon">🏠</span><span class="nav-txt">Home</span></button>
+          <button class="nav-btn" onclick="sw('deals')"><span class="nav-icon">🏷</span><span class="nav-txt">Deals</span></button>
+          <button class="nav-btn" onclick="sw('saved')"><span class="nav-icon">🔖</span><span class="nav-txt">Saved</span></button>
+          <button class="nav-btn on" onclick="sw('profile')"><span class="nav-icon">👤</span><span class="nav-txt">Profile</span></button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="desktop-hint">Tap nav tabs to switch screens · Tap any deal card to see full detail</div>
+</div>
+<script>
+const SC={publix:'#2E7D32',aldi:'#C62828',foodcity:'#1565C0',kroger:'#005DAA'};
+const BC={BOGO:'b-bogo',Sale:'b-sale','Best Price':'b-best','Everyday Low':'b-low','Digital Coupon':'b-coupon'};
+const CE={Proteins:'🥩',Produce:'🥦',Pantry:'🍝',Dairy:'🥛',Snacks:'🥜',Drinks:'🧃',Frozen:'🧊'};
+const DEALS=[
+  {id:0,store:'Publix',sc:'publix',name:'Cabot Greek Yogurt',cat:'Dairy',price:'BOGO ($5.79)',dt:'BOGO',verdict:'Stock Up',ve:'📦',vwhy:'BOGO on Greek yogurt is rare.',why:'32oz tub BOGO means effective price of ~$2.90/tub. High protein, versatile breakfast or snack. Stock up — this deal does not come around often.',comps:[{s:'Publix (BOGO)',p:'~$2.90/tub',best:true},{s:'Aldi',p:'$3.49/tub',best:false},{s:'Kroger',p:'$4.99/tub',best:false}]},
+  {id:1,store:'Publix',sc:'publix',name:'Dunkin K-Cup Coffee',cat:'Drinks',price:'BOGO ($31.99)',dt:'BOGO',verdict:'Buy It',ve:'✅',vwhy:'Saves $32 if you have a Keurig.',why:'32ct box BOGO is a massive saving on name brand K-Cups. If you drink Dunkin regularly this is the best price you will see for months.',comps:[{s:'Publix (BOGO)',p:'~$16/box',best:true},{s:'Walmart',p:'$28/box',best:false},{s:'Target',p:'$31/box',best:false}]},
+  {id:2,store:'Publix',sc:'publix',name:"Thomas' English Muffins",cat:'Pantry',price:'BOGO ($5.69)',dt:'BOGO',verdict:'Buy It',ve:'✅',vwhy:'Freezes perfectly.',why:'12oz pack BOGO — grab two, freeze one. English muffins freeze great for up to 3 months. Good breakfast option at effectively $2.85/pack.',comps:[{s:'Publix (BOGO)',p:'~$2.85/pkg',best:true},{s:'Food City',p:'$4.29/pkg',best:false},{s:'Kroger',p:'$4.49/pkg',best:false}]},
+  {id:3,store:'Publix',sc:'publix',name:'Nature Valley Protein Granola',cat:'Snacks',price:'BOGO ($5.99)',dt:'BOGO',verdict:'Buy It',ve:'✅',vwhy:'Good protein snack at half price.',why:'11oz bag BOGO makes this about $3/bag. Good oats and protein snack, shelf stable, easy to store. Worth picking up two.',comps:[{s:'Publix (BOGO)',p:'~$3.00/bag',best:true},{s:'Kroger',p:'$5.49/bag',best:false},{s:'Walmart',p:'$4.98/bag',best:false}]},
+  {id:4,store:'Publix',sc:'publix',name:'GreenWise Granola',cat:'Snacks',price:'BOGO ($6.99)',dt:'BOGO',verdict:'Buy It',ve:'✅',vwhy:'Organic granola at half price.',why:'12oz bag BOGO — multiple flavors including blueberry vanilla. Made with organic oats. Effective price ~$3.50/bag which is excellent for organic.',comps:[{s:'Publix (BOGO)',p:'~$3.50/bag',best:true},{s:'Whole Foods',p:'$7.99/bag',best:false},{s:'Kroger',p:'$6.49/bag',best:false}]},
+  {id:5,store:'Publix',sc:'publix',name:'Traditional Medicinals Tea',cat:'Drinks',price:'BOGO ($6.49)',dt:'BOGO',verdict:'Buy It',ve:'✅',vwhy:'Organic herbal tea at half price.',why:'16ct box BOGO. Organic chamomile, raspberry leaf and other varieties. Effective price ~$3.25/box. Good if you drink herbal tea regularly.',comps:[{s:'Publix (BOGO)',p:'~$3.25/box',best:true},{s:'Kroger',p:'$5.99/box',best:false},{s:'Walmart',p:'$5.44/box',best:false}]},
+  {id:6,store:'Food City',sc:'foodcity',name:'Mixed Pork Chops',cat:'Proteins',price:'$1.49/lb',dt:'Best Price',verdict:'Stock Up',ve:'📦',vwhy:'Cheapest protein price this week.',why:'Bone-in family pack at $1.49/lb is exceptional. Pork chops normally run $3-4/lb. Freeze what you do not cook this week. Best meat deal across all 4 stores.',comps:[{s:'Food City',p:'$1.49/lb',best:true},{s:'Kroger',p:'$2.99/lb',best:false},{s:'Publix',p:'$3.99/lb',best:false}]},
+  {id:7,store:'Food City',sc:'foodcity',name:'Chicken Breast Tenders',cat:'Proteins',price:'$2.99/lb',dt:'Sale',verdict:'Buy It',ve:'✅',vwhy:'Sanderson Farms quality at a fair price.',why:'Fresh family pack from Sanderson Farms. Good everyday chicken price — comparable to Aldi this week. Great for meal prep or weeknight dinners.',comps:[{s:'Food City',p:'$2.99/lb',best:true},{s:'Aldi',p:'$2.99/lb',best:true},{s:'Publix',p:'$4.99/lb',best:false}]},
+  {id:8,store:'Food City',sc:'foodcity',name:'Ground Beef 75% Lean',cat:'Proteins',price:'$4.49/lb',dt:'Sale',verdict:'Buy It',ve:'✅',vwhy:'Good price for 3lb or more.',why:'Food City Fresh 75% lean ground beef. Buy 3lb+ to get this price. Great for tacos, burgers, or pasta sauce. Freeze extras.',comps:[{s:'Food City',p:'$4.49/lb',best:true},{s:'Kroger',p:'$5.99/lb',best:false},{s:'Publix',p:'$5.49/lb',best:false}]},
+  {id:9,store:'Food City',sc:'foodcity',name:'Strawberries',cat:'Produce',price:'3/$10',dt:'Sale',verdict:'Buy It',ve:'✅',vwhy:'Good deal on fresh strawberries.',why:'16oz Basket & Bushel pints at 3 for $10. Aldi beats this at $1.79 for a 1lb pack but if you need large quantities Food City is solid.',comps:[{s:'Aldi',p:'$1.79/lb',best:true},{s:'Food City',p:'~$3.33/pint',best:false},{s:'Kroger',p:'$5.99/2lb',best:false}]},
+  {id:10,store:'Food City',sc:'foodcity',name:'Peelz Mandarins',cat:'Produce',price:'$3.99',dt:'Sale',verdict:'Buy It',ve:'✅',vwhy:'California grown 3lb bag at a fair price.',why:'Easy peel mandarins perfect for snacking. 3lb bag at $3.99 is a solid produce value.',comps:[{s:'Aldi',p:'$2.89/3lb',best:true},{s:'Food City',p:'$3.99/3lb',best:false},{s:'Publix',p:'$5.49/3lb',best:false}]},
+  {id:11,store:'Food City',sc:'foodcity',name:'Tomatoes on the Vine',cat:'Produce',price:'$1.69/lb',dt:'Sale',verdict:'Buy It',ve:'✅',vwhy:'Good everyday cooking tomato price.',why:'Ripe vine tomatoes at $1.69/lb is a fair deal for cooking.',comps:[{s:'Food City',p:'$1.69/lb',best:true},{s:'Kroger',p:'$2.49/lb',best:false},{s:'Publix',p:'$2.99/lb',best:false}]},
+  {id:12,store:'Food City',sc:'foodcity',name:'Maruchan Ramen',cat:'Pantry',price:'$0.45',dt:'Sale',verdict:'Buy It',ve:'✅',vwhy:'Cheapest pantry item on the ad.',why:'$0.45 per pack — stock the pantry. Budget staple for quick meals. Grab 10 for under $5.',comps:[{s:'Food City',p:'$0.45/ea',best:true},{s:'Walmart',p:'$0.27/ea',best:false},{s:'Kroger',p:'$0.59/ea',best:false}]},
+  {id:13,store:'Food City',sc:'foodcity',name:'Red Gold Diced Tomatoes',cat:'Pantry',price:'4/$5',dt:'Sale',verdict:'Buy It',ve:'✅',vwhy:'$1.25 each is excellent for canned tomatoes.',why:'14.5oz cans at 4 for $5. Red Gold is a quality brand. Stock up — canned tomatoes last years.',comps:[{s:'Food City',p:'$1.25/can',best:true},{s:'Kroger',p:'$1.49/can',best:false},{s:'Publix',p:'$1.79/can',best:false}]},
+  {id:14,store:'Food City',sc:'foodcity',name:'Kraft BBQ Sauce',cat:'Pantry',price:'2/$4',dt:'Sale',verdict:'Buy It',ve:'✅',vwhy:'Cookout season price.',why:'17.5-18oz bottles at 2 for $4. Grab two for grilling season.',comps:[{s:'Food City',p:'$2.00/bottle',best:true},{s:'Kroger',p:'$2.99/bottle',best:false},{s:'Publix',p:'$3.49/bottle',best:false}]},
+  {id:15,store:'Food City',sc:'foodcity',name:'Carolina Pride Bacon',cat:'Proteins',price:'$4.49',dt:'Sale',verdict:'Buy It',ve:'✅',vwhy:'Decent bacon price for the week.',why:'12oz package at $4.49. Fair for this week. Good for breakfast or adding to weeknight meals.',comps:[{s:'Food City',p:'$4.49/12oz',best:true},{s:'Kroger',p:'$5.99/12oz',best:false},{s:'Publix',p:'$6.49/12oz',best:false}]},
+  {id:16,store:'Food City',sc:'foodcity',name:'Lipton Tea',cat:'Drinks',price:'BOGO',dt:'BOGO',verdict:'Buy It',ve:'✅',vwhy:'Buy 2 get 1 free on iced tea.',why:'Good if you drink iced tea regularly. Stock up at effectively 33% off per box.',comps:[{s:'Food City (BOGO)',p:'~$2.00/box',best:true},{s:'Kroger',p:'$3.49/box',best:false},{s:'Walmart',p:'$3.27/box',best:false}]},
+  {id:17,store:'Food City',sc:'foodcity',name:'BodyArmor Sports Drink',cat:'Drinks',price:'10/$10',dt:'Sale',verdict:'Buy It',ve:'✅',vwhy:'$1 each is a solid sports drink price.',why:'16oz BodyArmor at $1 each. Good deal if you drink sports drinks regularly.',comps:[{s:'Food City',p:'$1.00/ea',best:true},{s:'Kroger',p:'$1.49/ea',best:false},{s:'Publix',p:'$1.79/ea',best:false}]},
+  {id:18,store:'Kroger',sc:'kroger',name:'Pork Boston Butt',cat:'Proteins',price:'$1.99/lb',dt:'Sale',verdict:'Stock Up',ve:'📦',vwhy:'Best slow-cook protein price this week.',why:'Bone-in Boston butt at $1.99/lb is exceptional for slow cooking or pulled pork. Easily feeds a family for under $10.',comps:[{s:'Kroger',p:'$1.99/lb',best:true},{s:'Food City',p:'$2.49/lb',best:false},{s:'Publix',p:'$3.49/lb',best:false}]},
+  {id:19,store:'Kroger',sc:'kroger',name:'Pork Back Ribs',cat:'Proteins',price:'$2.99/lb',dt:'Sale',verdict:'Stock Up',ve:'📦',vwhy:'Solid rib price — freeze extras.',why:'$2.99/lb for back ribs is a good deal for grilling or slow cooking.',comps:[{s:'Kroger',p:'$2.99/lb',best:true},{s:'Publix',p:'$4.99/lb',best:false},{s:'Food City',p:'$3.99/lb',best:false}]},
+  {id:20,store:'Kroger',sc:'kroger',name:'Ground Beef 80% Lean',cat:'Proteins',price:'$5.99/lb',dt:'Sale',verdict:'Buy It',ve:'✅',vwhy:'USDA Choice quality at a reasonable price.',why:'80% lean is the sweet spot for flavor. Good for burgers, meatballs, or taco meat.',comps:[{s:'Food City',p:'$4.49/lb',best:true},{s:'Kroger',p:'$5.99/lb',best:false},{s:'Publix',p:'$5.49/lb',best:false}]},
+  {id:21,store:'Kroger',sc:'kroger',name:'Boneless Chuck Roast',cat:'Proteins',price:'$6.99/lb',dt:'Digital Coupon',verdict:'Buy It',ve:'✅',vwhy:'Digital coupon price — clip it first.',why:'USDA Choice boneless chuck at $6.99/lb with digital coupon. Perfect for slow cooker meals.',comps:[{s:'Kroger (coupon)',p:'$6.99/lb',best:true},{s:'Publix',p:'$8.99/lb',best:false},{s:'Food City',p:'$7.99/lb',best:false}]},
+  {id:22,store:'Kroger',sc:'kroger',name:'Perdue Chicken Thighs/Wings',cat:'Proteins',price:'Buy 1 Get 2 Free',dt:'BOGO',verdict:'Stock Up',ve:'📦',vwhy:'Best poultry deal across all 4 stores.',why:'Buy 1 Get 2 Free on Perdue chicken — you are getting 3 packs for the price of 1. Do not miss this.',comps:[{s:'Kroger (B1G2)',p:'~$1.66/lb est.',best:true},{s:'Aldi',p:'$2.99/lb',best:false},{s:'Food City',p:'$2.99/lb',best:false}]},
+  {id:23,store:'Kroger',sc:'kroger',name:'Strawberries 2lb',cat:'Produce',price:'$5.99',dt:'Sale',verdict:'Buy It',ve:'✅',vwhy:'Good price on a big fresh pack.',why:'2lb pack at $5.99. Aldi is cheaper per lb but Kroger is convenient for large quantities.',comps:[{s:'Aldi',p:'$1.79/lb',best:true},{s:'Kroger',p:'$3.00/lb',best:false},{s:'Food City',p:'$3.33/pint',best:false}]},
+  {id:24,store:'Kroger',sc:'kroger',name:'Cauliflower or Brussels Sprouts',cat:'Produce',price:'2/$7',dt:'Sale',verdict:'Buy It',ve:'✅',vwhy:'Good veggie deal this week.',why:'1lb bag at 2 for $7. Roast them, steam them, or air fry.',comps:[{s:'Kroger',p:'$3.50/bag',best:true},{s:'Publix',p:'$4.99/bag',best:false},{s:'Aldi',p:'$2.99/bag',best:false}]},
+  {id:25,store:'Kroger',sc:'kroger',name:'Raspberries or Blackberries',cat:'Produce',price:'2/$5',dt:'Sale',verdict:'Buy It',ve:'✅',vwhy:'Good fresh berry deal.',why:'6oz at 2 for $5. Mix and match. Great for snacking, smoothies, or topping yogurt.',comps:[{s:'Kroger',p:'$2.50/6oz',best:true},{s:'Publix',p:'$3.99/6oz',best:false},{s:'Aldi',p:'$2.39/6oz',best:false}]},
+  {id:26,store:'Kroger',sc:'kroger',name:'Limes',cat:'Produce',price:'3/$2',dt:'Sale',verdict:'Stock Up',ve:'📦',vwhy:'Cheapest limes across all stores.',why:'3 limes for $2 is excellent. Limes store well for 2-3 weeks in the fridge.',comps:[{s:'Kroger',p:'3/$2',best:true},{s:'Food City',p:'$0.79/ea',best:false},{s:'Publix',p:'$0.89/ea',best:false}]},
+  {id:27,store:'Kroger',sc:'kroger',name:'Prego Pasta Sauce',cat:'Pantry',price:'2/$4',dt:'Digital Coupon',verdict:'Buy It',ve:'✅',vwhy:'Clip the digital coupon first.',why:'14.5-24oz jars at 2 for $4 with digital coupon. Great pantry staple at $2/jar.',comps:[{s:'Kroger (coupon)',p:'$2.00/jar',best:true},{s:'Food City',p:'$2.99/jar',best:false},{s:'Publix',p:'$3.49/jar',best:false}]},
+  {id:28,store:'Kroger',sc:'kroger',name:'Mission Soft Taco Tortillas',cat:'Pantry',price:'BOGO',dt:'BOGO',verdict:'Buy It',ve:'✅',vwhy:'Pantry staple at half price.',why:'10ct tortilla pack BOGO. Tortillas freeze well — grab two packs, freeze one.',comps:[{s:'Kroger (BOGO)',p:'~$2.00/pkg',best:true},{s:'Food City',p:'$3.99/pkg',best:false},{s:'Publix',p:'$4.49/pkg',best:false}]},
+  {id:29,store:'Kroger',sc:'kroger',name:'Kroger Sour Cream or Cottage Cheese',cat:'Dairy',price:'$1.99',dt:'Sale',verdict:'Buy It',ve:'✅',vwhy:'Great everyday dairy price.',why:'16oz at $1.99. Cottage cheese is a high protein budget food.',comps:[{s:'Kroger',p:'$1.99/16oz',best:true},{s:'Aldi',p:'$2.29/16oz',best:false},{s:'Publix',p:'$3.49/16oz',best:false}]},
+  {id:30,store:'Kroger',sc:'kroger',name:'Yoplait Yogurt',cat:'Dairy',price:'10/$5',dt:'Sale',verdict:'Buy It',ve:'✅',vwhy:'$0.50 each — one of the best yogurt prices around.',why:'Mix and match flavors at 10 for $5. Easy breakfast or snack all week.',comps:[{s:'Kroger',p:'$0.50/ea',best:true},{s:'Aldi',p:'$0.79/ea',best:false},{s:'Publix',p:'$1.00/ea',best:false}]},
+  {id:31,store:'Kroger',sc:'kroger',name:'Silk Almond Milk',cat:'Dairy',price:'$2.99',dt:'Sale',verdict:'Buy It',ve:'✅',vwhy:'Good price on organic almond milk.',why:'64oz carton at $2.99 is solid for Silk brand.',comps:[{s:'Kroger',p:'$2.99/64oz',best:true},{s:'Publix',p:'$4.49/64oz',best:false},{s:'Aldi',p:'$2.89/64oz',best:false}]},
+  {id:32,store:'Aldi',sc:'aldi',name:'Strawberries 1lb',cat:'Produce',price:'$1.79',dt:'Sale',verdict:'Stock Up',ve:'📦',vwhy:'Cheapest strawberry price this week.',why:'1lb package at $1.79 is the best strawberry price across all 4 stores this week.',comps:[{s:'Aldi',p:'$1.79/lb',best:true},{s:'Food City',p:'$3.33/pint',best:false},{s:'Kroger',p:'$3.00/lb',best:false}]},
+  {id:33,store:'Aldi',sc:'aldi',name:'Cantaloupe',cat:'Produce',price:'$1.99',dt:'Sale',verdict:'Buy It',ve:'✅',vwhy:'Whole melon for $1.99 is great value.',why:'Sliced fresh melon for the week — great snack or breakfast side.',comps:[{s:'Aldi',p:'$1.99/ea',best:true},{s:'Kroger',p:'$3.49/ea',best:false},{s:'Publix',p:'$3.99/ea',best:false}]},
+  {id:34,store:'Aldi',sc:'aldi',name:'California Mandarins 3lb',cat:'Produce',price:'$2.89',dt:'Sale',verdict:'Buy It',ve:'✅',vwhy:'Best mandarin deal this week.',why:'3lb bag of California mandarins at $2.89. Easy grab and go snack for the whole week.',comps:[{s:'Aldi',p:'$2.89/3lb',best:true},{s:'Food City',p:'$3.99/3lb',best:false},{s:'Publix',p:'$5.49/3lb',best:false}]},
+  {id:35,store:'Aldi',sc:'aldi',name:'Multicolored Peppers',cat:'Produce',price:'$2.19',dt:'Sale',verdict:'Buy It',ve:'✅',vwhy:'3-pack at a solid price.',why:'3-pack multicolored peppers. Great for stir fry, fajitas, salads, or snacking.',comps:[{s:'Aldi',p:'$2.19/3-pack',best:true},{s:'Kroger',p:'$3.99/3-pack',best:false},{s:'Publix',p:'$4.49/3-pack',best:false}]},
+  {id:36,store:'Aldi',sc:'aldi',name:'Pink Lady Apples 3lb',cat:'Produce',price:'$2.99',dt:'Sale',verdict:'Buy It',ve:'✅',vwhy:'Good everyday apple price.',why:'3lb bag at $2.99 — Washington grown Pink Lady apples.',comps:[{s:'Aldi',p:'$2.99/3lb',best:true},{s:'Kroger',p:'$5.49/3lb',best:false},{s:'Publix',p:'$5.99/3lb',best:false}]},
+  {id:37,store:'Aldi',sc:'aldi',name:'Chicken Breast Family Pack',cat:'Proteins',price:'$2.99/lb',dt:'Sale',verdict:'Stock Up',ve:'📦',vwhy:'Antibiotic free · best chicken breast price.',why:'Fresh antibiotic free chicken breast at $2.99/lb. Meal prep for the whole week or freeze extras.',comps:[{s:'Aldi',p:'$2.99/lb',best:true},{s:'Food City',p:'$2.99/lb',best:true},{s:'Publix',p:'$4.99/lb',best:false}]},
+  {id:38,store:'Aldi',sc:'aldi',name:'Thin-Sliced Pork Chops',cat:'Proteins',price:'$2.99/lb',dt:'Sale',verdict:'Buy It',ve:'✅',vwhy:'Easy weeknight meal protein.',why:'Fresh family pack thin-sliced pork chops. Cook in 5 minutes on a skillet.',comps:[{s:'Aldi',p:'$2.99/lb',best:false},{s:'Food City',p:'$1.49/lb',best:true},{s:'Kroger',p:'$3.49/lb',best:false}]},
+  {id:39,store:'Aldi',sc:'aldi',name:'Mango',cat:'Produce',price:'$0.79 each',dt:'Everyday Low',verdict:'Buy It',ve:'✅',vwhy:'Consistently one of the cheapest mangoes.',why:'$0.79 each is always the best mango price. Not a sale — just always cheap.',comps:[{s:'Aldi',p:'$0.79/ea',best:true},{s:'Kroger',p:'$1.49/ea',best:false},{s:'Publix',p:'$1.79/ea',best:false}]},
+  {id:40,store:'Aldi',sc:'aldi',name:'Large Avocado',cat:'Produce',price:'$0.59 each',dt:'Everyday Low',verdict:'Stock Up',ve:'📦',vwhy:'Best avocado price anywhere period.',why:'$0.59 each is extraordinary. Most stores charge $1.50-2.00 each. Buy 4-6 at different ripeness levels.',comps:[{s:'Aldi',p:'$0.59/ea',best:true},{s:'Kroger',p:'$1.29/ea',best:false},{s:'Publix',p:'$1.79/ea',best:false}]},
+  {id:41,store:'Aldi',sc:'aldi',name:'Blackberries 6oz',cat:'Produce',price:'$1.99',dt:'Everyday Low',verdict:'Buy It',ve:'✅',vwhy:'Great fresh berry price.',why:'6oz package at $1.99. Great for snacking, yogurt topping, or smoothies.',comps:[{s:'Aldi',p:'$1.99/6oz',best:true},{s:'Kroger',p:'$2.50/6oz',best:false},{s:'Publix',p:'$3.49/6oz',best:false}]},
+  {id:42,store:'Aldi',sc:'aldi',name:'Whole Milk 1 Gallon',cat:'Dairy',price:'$2.54',dt:'Everyday Low',verdict:'Buy It',ve:'✅',vwhy:'Consistently cheapest milk around.',why:'Friendly Farms whole milk at $2.54/gallon. Reliably beats every other store.',comps:[{s:'Aldi',p:'$2.54/gal',best:true},{s:'Food City',p:'$3.29/gal',best:false},{s:'Kroger',p:'$3.49/gal',best:false}]},
+  {id:43,store:'Aldi',sc:'aldi',name:'Colby Jack Sliced Cheese',cat:'Dairy',price:'$1.49',dt:'Everyday Low',verdict:'Buy It',ve:'✅',vwhy:'Excellent everyday cheese price.',why:'8oz deli-sliced Colby Jack at $1.49. Best cheese price across all stores this week.',comps:[{s:'Aldi',p:'$1.49/8oz',best:true},{s:'Kroger',p:'$2.99/8oz',best:false},{s:'Publix',p:'$3.49/8oz',best:false}]},
+  {id:44,store:'Aldi',sc:'aldi',name:'Deli Sliced Provolone',cat:'Dairy',price:'$1.49',dt:'Everyday Low',verdict:'Buy It',ve:'✅',vwhy:'Great sandwich cheese value.',why:'8oz deli sliced provolone at $1.49. Perfect for sandwiches and wraps.',comps:[{s:'Aldi',p:'$1.49/8oz',best:true},{s:'Kroger',p:'$2.79/8oz',best:false},{s:'Publix',p:'$3.29/8oz',best:false}]},
+  {id:45,store:'Aldi',sc:'aldi',name:'Greek Chickpeas',cat:'Pantry',price:'$2.29',dt:'Everyday Low',verdict:'Buy It',ve:'✅',vwhy:'Great plant protein pantry staple.',why:'Nearly 10oz of Greek-style chickpeas at $2.29. Add to salads, make hummus, or roast as a snack.',comps:[{s:'Aldi',p:'$2.29/can',best:true},{s:'Kroger',p:'$1.49/can',best:false},{s:'Publix',p:'$1.79/can',best:false}]},
+];
+const storeClass={Publix:'dr-publix',Aldi:'dr-aldi','Food City':'dr-foodcity',Kroger:'dr-kroger'};
+const storeColor={Publix:'#2E7D32',Aldi:'#C62828','Food City':'#1565C0',Kroger:'#005DAA'};
+let curFilter='All';let curSearch='';let prevScreen='deals';
+function sw(name){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('on'));document.getElementById('s-'+name).classList.add('active');const idx={home:0,deals:1,saved:2,profile:3}[name];document.querySelectorAll('.nav-btn').forEach((b,i)=>{if(i===idx)b.classList.add('on');});if(name==='deals')renderDeals();}
+function goDeals(cat){curFilter=cat;sw('deals');document.querySelectorAll('.fpill').forEach(p=>{p.classList.toggle('on',p.textContent.includes(cat)||cat==='All');});renderDeals();}
+function setF(cat,el){curFilter=cat;document.querySelectorAll('.fpill').forEach(p=>p.classList.remove('on'));el.classList.add('on');renderDeals();}
+function filterDeals(val){curSearch=val;renderDeals();}
+function renderDeals(){const list=document.getElementById('dealsList');let filtered=DEALS.filter(d=>{const cm=curFilter==='All'||d.cat===curFilter;const sm=!curSearch||d.name.toLowerCase().includes(curSearch.toLowerCase())||d.store.toLowerCase().includes(curSearch.toLowerCase());return cm&&sm;});const top3=DEALS.filter(d=>d.verdict==='Stock Up').slice(0,3);let html='';if(curFilter==='All'&&!curSearch){html+=`<div class="sec-head" style="padding:14px 14px 6px;">🔥 Top 3 This Week</div><div class="top3-strip">`;top3.forEach(d=>{const sc=storeColor[d.store];html+=`<div class="t3card" onclick="goDetail(${d.id})" style="background:${sc}ee;"><div class="t3-store" style="color:rgba(255,255,255,0.6);">${d.store}</div><div class="t3-name">${d.name}</div><div class="t3-price">${d.price}</div></div>`;});html+=`</div>`;}const cats=['Proteins','Produce','Pantry','Dairy','Snacks','Drinks'];const grouped={};filtered.forEach(d=>{if(!grouped[d.cat])grouped[d.cat]=[];grouped[d.cat].push(d);});html+=`<div class="deals-list">`;const orderedCats=cats.filter(c=>grouped[c]);orderedCats.forEach(cat=>{if(curFilter==='All'||!curSearch){html+=`<div class="cat-group-head">${CE[cat]||'📦'} ${cat}</div>`;}grouped[cat].forEach(d=>{const sc=storeColor[d.store];const bc=BC[d.dt]||'b-sale';html+=`<div class="deal-row ${storeClass[d.store]||''}" onclick="goDetail(${d.id})"><div class="dr-icon" style="background:${sc}18;">${CE[d.cat]||'📦'}</div><div class="dr-info"><div class="dr-name">${d.name}</div><div class="dr-meta" style="color:${sc};">${d.store} · ${d.cat}</div></div><div class="dr-right"><div class="dr-price">${d.price}</div><span class="badge ${bc}">${d.dt}</span></div></div>`;});});if(filtered.length===0){html+=`<div style="text-align:center;padding:40px 20px;color:var(--muted);font-size:14px;">No deals found.</div>`;}html+=`</div>`;list.innerHTML=html;}
+function goDetail(id){const d=DEALS.find(x=>x.id===id);prevScreen=document.querySelector('.screen.active')?.id?.replace('s-','')||'deals';const sc=storeColor[d.store];document.getElementById('dCat').textContent=d.cat;document.getElementById('dName').textContent=d.name;const stTag=document.getElementById('dStoreTag');stTag.textContent=d.store;stTag.style.background=sc+'22';stTag.style.color=sc;const bdg=document.getElementById('dBadge');bdg.textContent=d.dt;bdg.className='badge '+(BC[d.dt]||'b-sale');document.getElementById('dPrice').textContent=d.price;document.getElementById('dNote').textContent=d.why.split('.')[0]+'.';document.getElementById('dVEmoji').textContent=d.ve;document.getElementById('dVerdict').textContent=d.verdict;document.getElementById('dVWhy').textContent=d.vwhy;document.getElementById('dWhy').textContent=d.why;const comps=document.getElementById('dComps');comps.innerHTML=d.comps.map(c=>`<div class="comp-row"><span class="comp-store">${c.s}</span><span class="${c.best?'comp-price-best':'comp-price-other'}">${c.p}${c.best?' ✓':''}</span></div>`).join('');document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById('s-detail').classList.add('active');}
+function goBack(){sw(prevScreen==='detail'?'deals':prevScreen);}
+renderDeals();
+</script>
+</body>
+</html>
